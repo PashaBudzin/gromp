@@ -1,5 +1,6 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import tseslint from "typescript-eslint";
+import drizzle from "eslint-plugin-drizzle";
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
@@ -32,6 +33,14 @@ export default tseslint.config(
       "@typescript-eslint/no-misused-promises": [
         "error",
         { checksVoidReturn: { attributes: false } },
+      ],
+      "drizzle/enforce-delete-with-where": [
+        "error",
+        { drizzleObjectName: ["db", "ctx.db"] },
+      ],
+      "drizzle/enforce-update-with-where": [
+        "error",
+        { drizzleObjectName: ["db", "ctx.db"] },
       ],
     },
   },
