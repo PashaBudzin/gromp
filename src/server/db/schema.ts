@@ -1,8 +1,8 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { pgTableCreator } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -10,18 +10,40 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `drizzle_${name}`);
+export const createTable = pgTableCreator((name) => `gromp_${name}`);
 
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+export const products = createTable("product", (d) => ({
+  id: d.serial("id").primaryKey(),
+  name: d.text("name").notNull(),
+  pictureUrl: d.text("picture_url"),
+}));
+
+export const productsRelations = relations(products, ({ many }) => ({
+  records: many(records),
+}));
+
+export const stores = createTable("stores", (d) => ({
+  id: d.serial("id").primaryKey(),
+  name: d.text("name").notNull(),
+}));
+
+export const storeRelations = relations(stores, ({ many }) => ({
+  records: many(records),
+}));
+
+export const records = createTable("records", (d) => ({
+  id: d.serial().primaryKey(),
+  storeId: d.serial().notNull(),
+  productId: d.serial().notNull(),
+}));
+
+export const recordRelations = relations(records, ({ one }) => ({
+  store: one(stores, {
+    fields: [records.storeId],
+    references: [stores.id],
   }),
-  (t) => [index("name_idx").on(t.name)],
-);
+  product: one(products, {
+    fields: [records.productId],
+    references: [products.id],
+  }),
+}));
