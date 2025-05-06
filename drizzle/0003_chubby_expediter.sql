@@ -1,0 +1,1 @@
+ALTER TABLE "gromp_records" DROP COLUMN "storeId";
