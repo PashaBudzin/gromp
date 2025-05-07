@@ -1,15 +1,11 @@
 import { db } from "~/server/db";
 import type { ProductRecord, StoreFetcher } from "./store-fetcher";
-import {
-  stores,
-  type ProductsInsert,
-  type RecordInsert,
-} from "~/server/db/schema";
+import { stores } from "~/server/db/schema";
 import { load } from "cheerio";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 
-class AtbFetcher implements StoreFetcher {
+export class AtbFetcher implements StoreFetcher {
   static #instance: AtbFetcher;
   static #storeId: number;
 
@@ -37,12 +33,16 @@ class AtbFetcher implements StoreFetcher {
     return AtbFetcher.#instance;
   }
 
+  public get storeId(): number {
+    return AtbFetcher.#storeId;
+  }
+
   async fetch() {
     const categories = [
       287, 285, 585, 292, 294, 591, 299, 422, 344, 353, 325, 322, 286, 318, 551,
       360, 339, 415, 502, 373, 308,
     ];
-    const STORE = 1007;
+    const STORE = 798;
 
     let pages = 1;
     const result: ProductRecord[] = [];
@@ -130,7 +130,3 @@ class AtbFetcher implements StoreFetcher {
     return result;
   }
 }
-
-const fetcher = await AtbFetcher.getInstance();
-
-console.log(JSON.stringify(await fetcher.fetch()));

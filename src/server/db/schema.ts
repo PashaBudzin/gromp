@@ -9,12 +9,6 @@ import {
   type InferSelectModel,
 } from "drizzle-orm";
 
-/**
- * This is an example of how to use the multi-project echema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
 export const createTable = pgTableCreator((name) => `gromp_${name}`);
 
 export const products = createTable(
