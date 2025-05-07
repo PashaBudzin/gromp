@@ -7,7 +7,9 @@ export class SilpoFetcher implements StoreFetcher {
   static #instance: SilpoFetcher;
   static #storeId: number;
 
-  private constructor() {}
+  private constructor() {
+    // do nothing
+  }
 
   private static async createInstance() {
     await db.insert(stores).values({ name: "silpo" }).onConflictDoNothing();
@@ -74,7 +76,7 @@ export class SilpoFetcher implements StoreFetcher {
       for (let page = 0; page <= pages; page++) {
         console.log(`fetching page ${page}/${pages} [SILPO FETCHER]`);
         result.push(
-          ...(await fetch(
+          ...((await fetch(
             `https://sf-ecom-api.silpo.ua/v1/uk/branches/${store}/products?limit=${limit}&offset=${page * limit}&category=${cat}&includeChildCategories=true`,
             {
               body: null,
@@ -83,7 +85,12 @@ export class SilpoFetcher implements StoreFetcher {
           )
             .then((r) => r.json())
             .then((d) => {
-              if (!d.items || !d.total)
+              if (
+                !("items" in d) ||
+                typeof d?.item !== "object" ||
+                !("total" in d) ||
+                typeof d?.total !== "number"
+              )
                 throw new Error(`no data on ${JSON.stringify(d)}`);
 
               console.log(
@@ -92,32 +99,49 @@ export class SilpoFetcher implements StoreFetcher {
 
               pages = Math.ceil(d.total / limit);
 
-              return d.items.map(
-                (item: {
-                  title: string;
-                  price: number;
-                  oldPrice: number;
-                  icon: string;
-                  slug: string;
-                }) => {
-                  const i: ProductRecord = {
-                    isOnSale: !!item.oldPrice,
-                    priceBeforeSaleUAH: item.oldPrice,
-                    priceUAH: item.price,
-                    name: item.title,
-                    imageURL: `https://images.silpo.ua/products/600x600/webp/${item.icon}.png`,
-                    link: `https://silpo.ua/product/${item.slug}`,
-                    loyaltyPriceUAH: null,
-                    storeId: this.storeId,
-                  };
-                  return i;
-                },
-              );
+              return d.items.map((item: unknown) => {
+                if (
+                  typeof item !== "object" ||
+                  item == null ||
+                  !("price" in item) ||
+                  !item?.price ||
+                  typeof item?.price !== "number" ||
+                  !("title" in item) ||
+                  !item?.title ||
+                  typeof item?.title !== "string" ||
+                  !("icon" in item) ||
+                  !item?.icon ||
+                  !("icon" in item) ||
+                  !item?.icon ||
+                  typeof item?.icon !== "string" ||
+                  !("slug" in item) ||
+                  !item?.slug ||
+                  typeof item?.slug !== "string" ||
+                  !("oldPrice" in item) ||
+                  !(item.oldPrice == null || typeof item.oldPrice == "number")
+                ) {
+                  console.error("bad object in items");
+                  console.error(item);
+                  return;
+                }
+
+                const i: ProductRecord = {
+                  isOnSale: !!item.oldPrice,
+                  priceBeforeSaleUAH: item.oldPrice,
+                  priceUAH: item.price,
+                  name: item.title,
+                  imageURL: `https://images.silpo.ua/products/600x600/webp/${item.icon}.png`,
+                  link: `https://silpo.ua/product/${item.slug}`,
+                  loyaltyPriceUAH: null,
+                  storeId: this.storeId,
+                };
+                return i;
+              }) as ProductRecord[];
             })
             .catch((err) => {
               console.error(err);
               return [];
-            })),
+            })) as ProductRecord[]),
         );
       }
     }

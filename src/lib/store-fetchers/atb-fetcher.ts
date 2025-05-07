@@ -9,7 +9,9 @@ export class AtbFetcher implements StoreFetcher {
   static #instance: AtbFetcher;
   static #storeId: number;
 
-  private constructor() {}
+  private constructor() {
+    // do nothing
+  }
 
   private static async createInstance() {
     await db.insert(stores).values({ name: "ATB" }).onConflictDoNothing();
