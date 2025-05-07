@@ -1,4 +1,4 @@
-import { AtbFetcher } from "~/lib/store-fetchers/atb-fetcher";
+import { SilpoFetcher } from "~/lib/store-fetchers/silpo-fetcher";
 import { createDbRecords } from "~/lib/store-fetchers/store-fetcher";
 
 export async function GET(request: Request) {
@@ -9,9 +9,9 @@ export async function GET(request: Request) {
     });
   }
 
-  const atbFetcher = await AtbFetcher.getInstance();
+  const silpoFetcher = await SilpoFetcher.getInstance();
 
-  await createDbRecords(atbFetcher);
+  await createDbRecords(silpoFetcher);
 
   return new Response("ok", { status: 200 });
 }
