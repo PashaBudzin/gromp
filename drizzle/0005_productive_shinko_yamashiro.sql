@@ -1,0 +1,1 @@
+CREATE INDEX "name_lower_index" ON "gromp_product" USING btree (LOWER("name"));

@@ -1,7 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
-import { check, pgTableCreator, unique } from "drizzle-orm/pg-core";
+import { check, index, pgTableCreator, unique } from "drizzle-orm/pg-core";
 import {
   relations,
   sql,
@@ -22,9 +22,10 @@ export const products = createTable(
     link: d.text("link").notNull(),
   }),
 
-  (t) => ({
-    uniqueNamePerStore: unique().on(t.storeId, t.name),
-  }),
+  (t) => [
+    unique().on(t.storeId, t.name),
+    index("name_lower_index").on(sql`LOWER(${t.name})`),
+  ],
 );
 
 export type ProductsSelect = InferSelectModel<typeof products>;
