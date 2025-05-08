@@ -2,11 +2,11 @@
   "crons": [
     {
       "path": "/api/fetch-stores/atb",
-      "schedule": "30 8 * * 3"
+      "schedule": "30 4 * * 3"
     },
     {
       "path": "/api/fetch-stores/silpo",
-      "schedule": "30 8 * * 4"
+      "schedule": "30 4 * * 4"
     }
   ]
 }
