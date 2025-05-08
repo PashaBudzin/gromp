@@ -94,7 +94,7 @@ export class SilpoFetcher implements StoreFetcher {
 
         try {
           const res = await fetch(url, { method: "GET" });
-          const json = await res.json();
+          const json: unknown = await res.json();
           const data = schema.parse(json);
 
           totalPages = Math.ceil(data.total / limit);
