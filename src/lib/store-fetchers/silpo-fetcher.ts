@@ -2,6 +2,7 @@ import { db } from "~/server/db";
 import type { ProductRecord, StoreFetcher } from "./store-fetcher";
 import { stores } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 
 export class SilpoFetcher implements StoreFetcher {
   static #instance: SilpoFetcher;
@@ -85,46 +86,28 @@ export class SilpoFetcher implements StoreFetcher {
           )
             .then((r) => r.json())
             .then((d) => {
-              if (
-                !("items" in d) ||
-                typeof d?.item !== "object" ||
-                !("total" in d) ||
-                typeof d?.total !== "number"
-              )
-                throw new Error(`no data on ${JSON.stringify(d)}`);
+              const data = z
+                .object({
+                  total: z.number(),
+                  items: z.array(
+                    z.object({
+                      oldPrice: z.number().nullish(),
+                      price: z.number(),
+                      title: z.string(),
+                      slug: z.string(),
+                      icon: z.string(),
+                    }),
+                  ),
+                })
+                .parse(d);
 
               console.log(
                 `successfully fetched page ${page}/${pages} [SILPO FETCHER]`,
               );
 
-              pages = Math.ceil(d.total / limit);
+              pages = Math.ceil(data.total / limit);
 
-              return d.items.map((item: unknown) => {
-                if (
-                  typeof item !== "object" ||
-                  item == null ||
-                  !("price" in item) ||
-                  !item?.price ||
-                  typeof item?.price !== "number" ||
-                  !("title" in item) ||
-                  !item?.title ||
-                  typeof item?.title !== "string" ||
-                  !("icon" in item) ||
-                  !item?.icon ||
-                  !("icon" in item) ||
-                  !item?.icon ||
-                  typeof item?.icon !== "string" ||
-                  !("slug" in item) ||
-                  !item?.slug ||
-                  typeof item?.slug !== "string" ||
-                  !("oldPrice" in item) ||
-                  !(item.oldPrice == null || typeof item.oldPrice == "number")
-                ) {
-                  console.error("bad object in items");
-                  console.error(item);
-                  return;
-                }
-
+              return data.items.map((item) => {
                 const i: ProductRecord = {
                   isOnSale: !!item.oldPrice,
                   priceBeforeSaleUAH: item.oldPrice,
@@ -149,3 +132,6 @@ export class SilpoFetcher implements StoreFetcher {
     return result;
   }
 }
+
+const silpoFetcher = await SilpoFetcher.getInstance();
+console.log(await silpoFetcher.fetch());
