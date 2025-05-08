@@ -107,19 +107,16 @@ export class SilpoFetcher implements StoreFetcher {
 
               pages = Math.ceil(data.total / limit);
 
-              return data.items.map((item) => {
-                const i: ProductRecord = {
-                  isOnSale: !!item.oldPrice,
-                  priceBeforeSaleUAH: item.oldPrice,
-                  priceUAH: item.price,
-                  name: item.title,
-                  imageURL: `https://images.silpo.ua/products/600x600/webp/${item.icon}.png`,
-                  link: `https://silpo.ua/product/${item.slug}`,
-                  loyaltyPriceUAH: null,
-                  storeId: this.storeId,
-                };
-                return i;
-              }) as ProductRecord[];
+              return data.items.map((item) => ({
+                isOnSale: !!item.oldPrice,
+                priceBeforeSaleUAH: item.oldPrice,
+                priceUAH: item.price,
+                name: item.title,
+                imageURL: `https://images.silpo.ua/products/600x600/webp/${item.icon}.png`,
+                link: `https://silpo.ua/product/${item.slug}`,
+                loyaltyPriceUAH: null,
+                storeId: this.storeId,
+              }));
             })
             .catch((err) => {
               console.error(err);
