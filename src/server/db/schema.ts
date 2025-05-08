@@ -19,6 +19,7 @@ export const products = createTable(
     pictureUrl: d.text("picture_url"),
     createdAt: d.timestamp().defaultNow().notNull(),
     storeId: d.serial().notNull(),
+    link: d.text("link").notNull(),
   }),
 
   (t) => ({

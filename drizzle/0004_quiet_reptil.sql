@@ -1,0 +1,1 @@
+ALTER TABLE "gromp_product" ADD COLUMN "link" text NOT NULL;
