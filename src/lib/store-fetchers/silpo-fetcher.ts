@@ -1,5 +1,6 @@
 import { db } from "~/server/db";
 import type { ProductRecord, StoreFetcher } from "./store-fetcher";
+import pLimit from "p-limit";
 import { stores } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -39,8 +40,6 @@ export class SilpoFetcher implements StoreFetcher {
   }
 
   public async fetch() {
-    const result: ProductRecord[] = [];
-
     const categories = [
       "frukty-ovochi-4788",
       "m-iaso-4411",
@@ -68,46 +67,41 @@ export class SilpoFetcher implements StoreFetcher {
       "dytiachi-tovary-449",
       "dlia-tvaryn-653",
     ];
-    const limit = 100;
 
+    const limit = 100;
     const store = "1ee7fab3-7713-6a0c-b802-8d149aac137a";
 
-    for (const cat of categories) {
-      let pages = 1;
-      for (let page = 0; page <= pages; page++) {
-        console.log(`fetching page ${page}/${pages} [SILPO FETCHER]`);
-        result.push(
-          ...((await fetch(
-            `https://sf-ecom-api.silpo.ua/v1/uk/branches/${store}/products?limit=${limit}&offset=${page * limit}&category=${cat}&includeChildCategories=true`,
-            {
-              body: null,
-              method: "GET",
-            },
-          )
-            .then((r) => r.json())
-            .then((d) => {
-              const data = z
-                .object({
-                  total: z.number(),
-                  items: z.array(
-                    z.object({
-                      oldPrice: z.number().nullish(),
-                      price: z.number(),
-                      title: z.string(),
-                      slug: z.string(),
-                      icon: z.string(),
-                    }),
-                  ),
-                })
-                .parse(d);
+    const schema = z.object({
+      total: z.number(),
+      items: z.array(
+        z.object({
+          oldPrice: z.number().nullish(),
+          price: z.number(),
+          title: z.string(),
+          slug: z.string(),
+          icon: z.string(),
+        }),
+      ),
+    });
 
-              console.log(
-                `successfully fetched page ${page}/${pages} [SILPO FETCHER]`,
-              );
+    const fetchCategory = async (cat: string) => {
+      let page = 0;
+      let totalPages = 1;
+      const records: ProductRecord[] = [];
 
-              pages = Math.ceil(data.total / limit);
+      while (page < totalPages) {
+        const url = `https://sf-ecom-api.silpo.ua/v1/uk/branches/${store}/products?limit=${limit}&offset=${page * limit}&category=${cat}&includeChildCategories=true`;
 
-              return data.items.map((item) => ({
+        try {
+          const res = await fetch(url, { method: "GET" });
+          const json = await res.json();
+          const data = schema.parse(json);
+
+          totalPages = Math.ceil(data.total / limit);
+
+          records.push(
+            ...data.items.map(
+              (item): ProductRecord => ({
                 isOnSale: !!item.oldPrice,
                 priceBeforeSaleUAH: item.oldPrice,
                 priceUAH: item.price,
@@ -116,19 +110,27 @@ export class SilpoFetcher implements StoreFetcher {
                 link: `https://silpo.ua/product/${item.slug}`,
                 loyaltyPriceUAH: null,
                 storeId: this.storeId,
-              }));
-            })
-            .catch((err) => {
-              console.error(err);
-              return [];
-            })) as ProductRecord[]),
-        );
-      }
-    }
+              }),
+            ),
+          );
 
-    return result;
+          page++;
+        } catch (err) {
+          console.error(`Failed to fetch category ${cat}, page ${page}`, err);
+          break;
+        }
+      }
+
+      return records;
+    };
+
+    const concurrency = 7;
+    const pl = pLimit(concurrency);
+
+    const allRecordsNested = await Promise.all(
+      categories.map((cat) => pl(() => fetchCategory(cat))),
+    );
+
+    return allRecordsNested.flat();
   }
 }
-
-const silpoFetcher = await SilpoFetcher.getInstance();
-console.log(await silpoFetcher.fetch());
