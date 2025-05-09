@@ -1,3 +1,22 @@
 {
-  "hello": "hello"
+  "hello": "hello",
+  "currency": "UAH",
+  "navbar": {
+    "city_prices": "Prices in cities",
+    "blog": "Blog",
+    "search": "Click to search",
+    "search_placeholder": "Type something...",
+    "search_no_results": "No results found",
+    "search_suggestions": "Suggestions",
+    "search_results": "Results",
+    "menu": "menu",
+    "theme": {
+      "dark": "Dark",
+      "light": "Light",
+      "default": "System"
+    },
+    "locale_switch": {
+      "change": "Change language"
+    }
+  }
 }

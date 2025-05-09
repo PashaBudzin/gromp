@@ -6,6 +6,8 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import type { Locale } from "~/i18n-config";
+import Navbar from "~/components/navbar";
+import { getDictionary } from "~/get-dictionary";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -23,11 +25,14 @@ export default async function RootLayout({
   params,
 }: Readonly<{ children: React.ReactNode; params: Promise<{ lang: Locale }> }>) {
   const p = await params;
+
+  const dictionary = await getDictionary(p.lang);
+
   return (
     <html
-      lang={p.lang}
       className={`${geist.variable}`}
       suppressHydrationWarning
+      lang={p.lang}
     >
       <body>
         <ThemeProvider
@@ -36,7 +41,12 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <div className="bg-background min-h-[100vh]">
+              <Navbar dictionary={dictionary.navbar} />
+              <main>{children}</main>
+            </div>
+          </TRPCReactProvider>
         </ThemeProvider>
       </body>
     </html>

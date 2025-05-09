@@ -1,3 +1,22 @@
 {
-  "hello": "привіт"
+  "hello": "привіт",
+  "currency": "грн",
+  "navbar": {
+    "city_prices": "Ціни у містах",
+    "blog": "Блог",
+    "search": "Натисніть щоб шукати ",
+    "search_placeholder": "Напишіть щось...",
+    "search_no_results": "Нічого не знайдено",
+    "search_suggestions": "Пропозиції",
+    "search_results": "Результати",
+    "menu": "Меню",
+    "theme": {
+      "dark": "Темна",
+      "light": "Світла",
+      "default": "Системна"
+    },
+    "locale_switch": {
+      "change": "Змінити мову"
+    }
+  }
 }
