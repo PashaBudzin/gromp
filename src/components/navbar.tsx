@@ -27,29 +27,31 @@ export default function Navbar({
   const common = { alt: "Logo", sizes: "100vw" };
 
   return (
-    <nav className="bg-background/20 border-border sticky top-0 flex h-14 w-full gap-8 border-b-3 border-dotted px-2 py-2 backdrop-blur-md md:px-4 lg:px-32">
-      <Link className="my-auto flex gap-2" href="/">
-        <Logo className="my-auto h-10 w-11" />
-        <p className="text my-auto hidden text-xl md:block">Gromp</p>
-      </Link>
-      <div className="my-auto hidden gap-4 lg:flex">
-        <Link href="/city-prices" className="text-muted-foreground">
-          {dictionary.city_prices}
+    <nav className="bg-background/20 border-border sticky top-0 h-14 w-full border-b-2 border-dashed px-2 backdrop-blur-md md:px-4 lg:px-32">
+      <div className="border-border flex gap-8 border-dashed py-2 lg:border-r-2 lg:border-l-2 lg:px-2">
+        <Link className="border-border my-auto flex gap-2 px-2" href="/">
+          <Logo className="my-auto h-10 w-11" />
+          <p className="text my-auto hidden text-xl md:block">Gromp</p>
         </Link>
+        <div className="my-auto hidden gap-4 lg:flex">
+          <Link href="/city-prices" className="text-muted-foreground">
+            {dictionary.city_prices}
+          </Link>
 
-        <Link href="/city-prices" className="text-muted-foreground">
-          {dictionary.blog}
-        </Link>
-      </div>
-
-      <div className="ml-auto flex gap-2">
-        <Search dictionary={dictionary} />
-        <div className="hidden gap-2 lg:flex">
-          <ModeToggle dictionary={dictionary} />
-          <LocaleSwitcher dictionary={dictionary} />
+          <Link href="/city-prices" className="text-muted-foreground">
+            {dictionary.blog}
+          </Link>
         </div>
 
-        <MobileNavbar dictionary={dictionary} />
+        <div className="ml-auto flex gap-2">
+          <Search dictionary={dictionary} />
+          <div className="hidden gap-2 lg:flex">
+            <ModeToggle dictionary={dictionary} />
+            <LocaleSwitcher dictionary={dictionary} />
+          </div>
+
+          <MobileNavbar dictionary={dictionary} />
+        </div>
       </div>
     </nav>
   );
