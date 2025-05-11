@@ -13,12 +13,9 @@ import { z } from "zod";
 import { Search as SearchGlass } from "lucide-react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { useDictionary } from "./dictionary-provider";
 
-export default function Search({
-  dictionary,
-}: {
-  dictionary: Awaited<ReturnType<typeof getDictionary>>["navbar"];
-}) {
+export default function Search() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const randomInitialQuery = useMemo((): string => {
@@ -26,6 +23,7 @@ export default function Search({
 
     return str[Math.round(Math.random() * (str.length - 1))] ?? "а";
   }, []);
+  const dictionary = useDictionary().navbar;
   const [query, setQuery] = useState(randomInitialQuery);
   const [suggestions, setSuggestions] = useState<{ n: string; i: number }[]>(
     [],

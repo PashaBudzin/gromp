@@ -18,5 +18,15 @@
     "locale_switch": {
       "change": "Змінити мову"
     }
+  },
+  "home_page": {
+    "search_placeholder": "Напишіть щось...",
+    "search": {
+      "sorting": "Сортування",
+      "price_asc": "Ціна за збільшенням",
+      "price_desc": "Ціна за зменшенням",
+      "alphabet_asc": "Від А до Я",
+      "alphabet_desc": "Від Я до А"
+    }
   }
 }

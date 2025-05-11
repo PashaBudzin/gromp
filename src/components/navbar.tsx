@@ -16,15 +16,11 @@ import { Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { getImageProps } from "next/image";
 import Logo from "./logo";
+import { useDictionary } from "./dictionary-provider";
 
-export default function Navbar({
-  dictionary,
-}: {
-  dictionary: Awaited<ReturnType<typeof getDictionary>>["navbar"];
-}) {
-  const common = { alt: "Logo", sizes: "100vw" };
+export default function Navbar() {
+  const dictionary = useDictionary();
 
   return (
     <nav className="bg-background/20 border-border sticky top-0 h-14 w-full border-b-2 border-dashed px-2 backdrop-blur-md md:px-4 lg:px-32">
@@ -35,40 +31,37 @@ export default function Navbar({
         </Link>
         <div className="my-auto hidden gap-4 lg:flex">
           <Link href="/city-prices" className="text-muted-foreground">
-            {dictionary.city_prices}
+            {dictionary.navbar.city_prices}
           </Link>
 
           <Link href="/city-prices" className="text-muted-foreground">
-            {dictionary.blog}
+            {dictionary.navbar.blog}
           </Link>
         </div>
 
         <div className="ml-auto flex gap-2">
-          <Search dictionary={dictionary} />
+          <Search />
           <div className="hidden gap-2 lg:flex">
-            <ModeToggle dictionary={dictionary} />
-            <LocaleSwitcher dictionary={dictionary} />
+            <ModeToggle />
+            <LocaleSwitcher />
           </div>
 
-          <MobileNavbar dictionary={dictionary} />
+          <MobileNavbar />
         </div>
       </div>
     </nav>
   );
 }
 
-function MobileNavbar({
-  dictionary,
-}: {
-  dictionary: Awaited<ReturnType<typeof getDictionary>>["navbar"];
-}) {
+function MobileNavbar() {
+  const dictionary = useDictionary();
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button
           variant="outline"
           className="lg:hidden"
-          aria-label={dictionary.menu}
+          aria-label={dictionary.navbar.menu}
         >
           <Menu />
         </Button>
@@ -76,15 +69,15 @@ function MobileNavbar({
       <SheetContent className="pt-12 text-center">
         <SheetTitle></SheetTitle>
         <Separator />
-        <Link href="/city-prices">{dictionary.city_prices}</Link>
+        <Link href="/city-prices">{dictionary.navbar.city_prices}</Link>
         <Separator />
-        <Link href="/city-prices">{dictionary.blog}</Link>
+        <Link href="/city-prices">{dictionary.navbar.blog}</Link>
         <Separator />
 
         <SheetFooter>
           <div className="mx-auto flex gap-2">
-            <LocaleSwitcher dictionary={dictionary} />
-            <ModeToggle dictionary={dictionary} />
+            <LocaleSwitcher />
+            <ModeToggle />
             <Link href={"https://github.com/PashaBudzin/gromp"}>
               <Button variant={"outline"}>
                 <SiGithub />

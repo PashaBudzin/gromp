@@ -5,6 +5,13 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    remotePatterns: [
+      new URL("https://images.silpo.ua/**"),
+      new URL("https://src.zakaz.atbmarket.com/**"),
+    ],
+  },
+};
 
 export default config;

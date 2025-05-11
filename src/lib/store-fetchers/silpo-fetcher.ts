@@ -106,7 +106,7 @@ export class SilpoFetcher implements StoreFetcher {
                 priceBeforeSaleUAH: item.oldPrice,
                 priceUAH: item.price,
                 name: item.title,
-                imageURL: `https://images.silpo.ua/products/600x600/webp/${item.icon}.png`,
+                imageURL: `https://images.silpo.ua/products/600x600/webp/${item.icon}`,
                 link: `https://silpo.ua/product/${item.slug}`,
                 loyaltyPriceUAH: null,
                 storeId: this.storeId,

@@ -16,13 +16,17 @@ export const productRouter = createTRPCRouter({
         query: z.string(),
         limit: z.number().max(100).default(50),
         skip: z.number().default(0),
+        cursor: z.number().nullish(),
         sort: z
           .enum(["priceAsc", "priceDesc", "alphabetAsc", "alphabetDesc"])
           .default("alphabetAsc"),
       }),
     )
     .query(async (opts) => {
-      const { query, limit, skip, sort } = opts.input;
+      const { query, limit, sort } = opts.input;
+
+      let skip = opts.input.cursor;
+      if (opts.input.skip) skip = opts.input.skip;
 
       const latestPrice = sql<string>`(
         SELECT "price_UAH"

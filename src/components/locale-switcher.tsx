@@ -11,18 +11,14 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Languages } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import type { getDictionary } from "~/get-dictionary";
+import { useDictionary } from "./dictionary-provider";
 
 const localeDisplay = {
   en: "English 🇺🇸",
   uk: "Українська 🇺🇦",
 };
 
-export default function LocaleSwitcher({
-  dictionary,
-}: {
-  dictionary: Awaited<ReturnType<typeof getDictionary>>["navbar"];
-}) {
+export default function LocaleSwitcher() {
   const pathname = usePathname();
   const redirectedPathname = (locale: Locale) => {
     if (!pathname) return "/";
@@ -31,13 +27,17 @@ export default function LocaleSwitcher({
     return segments.join("/");
   };
 
+  const dictionary = useDictionary();
+
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
             <Languages className="transition-all" />
-            <span className="sr-only">{dictionary.locale_switch.change}</span>
+            <span className="sr-only">
+              {dictionary.navbar.locale_switch.change}
+            </span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
