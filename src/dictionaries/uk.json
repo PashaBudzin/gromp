@@ -32,7 +32,13 @@
   "product_id": {
     "card": {
       "buy_in_store": "Купити у магазині",
-      "buy": "Купити"
+      "buy": "Купити",
+      "price_history": "Історія цін"
+    },
+    "chart": {
+      "label_cur": "Ціна",
+      "label_before_sale": "Ціна до акціі",
+      "label_loyalty_price": "Ціна з програмою лояльності"
     }
   }
 }

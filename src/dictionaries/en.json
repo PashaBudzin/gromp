@@ -32,7 +32,13 @@
   "product_id": {
     "card": {
       "buy_in_store": "Buy in store",
-      "buy": "Buy"
+      "buy": "Buy",
+      "price_history": "Price History"
+    },
+    "chart": {
+      "label_cur": "Price",
+      "label_before_sale": "Price before sale",
+      "label_loyalty_price": "Price with loyalty card"
     }
   }
 }

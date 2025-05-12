@@ -1,8 +1,10 @@
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import PriceHistoryChartCard from "~/components/price-history-chart-card";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
+import { type ChartConfig } from "~/components/ui/chart";
 import { getDictionary } from "~/get-dictionary";
 import type { Locale } from "~/i18n-config";
 import { cn } from "~/lib/utils";
@@ -27,6 +29,28 @@ export default async function Product({
   if (!productLatestRecord) return notFound();
 
   if (!product) return notFound();
+
+  const chartData = (product ?? [])?.records.map((r) => ({
+    date: new Date(r.createdAt),
+    currentPrice: r.priceUAH,
+    priceBeforeSale: r.priceBeforeSale,
+    loyaltyPrice: r.loyaltyPriceUAH,
+  }));
+
+  const chartConfig = {
+    currentPrice: {
+      label: dictionary.chart.label_cur,
+      color: "hsl(var(--chart-1))",
+    },
+    priceBeforeSale: {
+      label: dictionary.chart.label_before_sale,
+      color: "hsl(var(--chart-2))",
+    },
+    loyaltyPrice: {
+      label: dictionary.chart.label_loyalty_price,
+      color: "hsl(var(--chart-3))",
+    },
+  } satisfies ChartConfig;
 
   return (
     <div className="grid grid-cols-1 px-10 lg:grid-cols-2">
@@ -85,6 +109,8 @@ export default async function Product({
           </CardContent>
         </Card>
       </div>
+
+      <PriceHistoryChartCard chartConfig={chartConfig} chartData={chartData} />
     </div>
   );
 }
