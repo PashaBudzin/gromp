@@ -9,10 +9,11 @@ export default function ProductCard(props: {
   price: string;
   isOnSale: boolean;
   priceBeforeSale: string | null;
+  className: string;
   currencySymbol: string;
 }) {
   return (
-    <Link href={`/product/${props.productId}`}>
+    <Link href={`/product/${props.productId}`} className={cn(props.className)}>
       <Card className="mt-10 w-80">
         <CardContent>
           <img

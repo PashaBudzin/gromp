@@ -55,10 +55,10 @@ export default function IndexPage() {
   }, [inView, fetchNextPage]);
   return (
     <section className="min-h-[100vh]">
-      <div className="flex gap-4">
+      <div className="grid grid-cols-6 gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-1/6">
+            <Button variant="outline" className="col-span-6 md:col-span-1">
               {dictionary.search.sorting}
               <ChevronDown />
             </Button>
@@ -98,13 +98,13 @@ export default function IndexPage() {
           </DropdownMenuContent>
         </DropdownMenu>
         <Input
-          className="w-5/6"
+          className="col-span-6 md:col-span-5"
           placeholder={dictionary.search_placeholder}
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
 
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-1 justify-center md:grid-cols-2 xl:grid-cols-3">
         {data?.pages
           .flat()
           .map((p, i) => (
@@ -117,6 +117,7 @@ export default function IndexPage() {
               currencySymbol={currency}
               productId={p.id}
               key={i}
+              className="mx-auto"
             />
           ))}
         {isLoading ? (
