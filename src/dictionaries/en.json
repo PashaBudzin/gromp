@@ -22,14 +22,17 @@
   "home_page": {
     "search_placeholder": "Type something...",
     "search": {
-      "sorting": "Sorting"
-    },
-    "search": {
       "sorting": "Sorting",
       "price_asc": "Price Ascending",
       "price_desc": "Price Descending",
       "alphabet_asc": "From A to Z",
       "alphabet_desc": "From Z to A"
+    }
+  },
+  "product_id": {
+    "card": {
+      "buy_in_store": "Buy in store",
+      "buy": "Buy"
     }
   }
 }

@@ -16,7 +16,7 @@ export const productRouter = createTRPCRouter({
         query: z.string(),
         limit: z.number().max(100).default(50),
         skip: z.number().default(0),
-        cursor: z.number().nullish(),
+        cursor: z.number().default(0),
         sort: z
           .enum(["priceAsc", "priceDesc", "alphabetAsc", "alphabetDesc"])
           .default("alphabetAsc"),
@@ -77,5 +77,23 @@ export const productRouter = createTRPCRouter({
         .offset(skip);
 
       return data;
+    }),
+
+  getProductById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async (opts) => {
+      const { id } = opts.input;
+
+      return await db.query.products.findFirst({
+        where: eq(products.id, id),
+        with: {
+          records: true,
+          store: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      });
     }),
 });

@@ -28,5 +28,11 @@
       "alphabet_asc": "Від А до Я",
       "alphabet_desc": "Від Я до А"
     }
+  },
+  "product_id": {
+    "card": {
+      "buy_in_store": "Купити у магазині",
+      "buy": "Купити"
+    }
   }
 }
