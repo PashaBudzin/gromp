@@ -29,18 +29,18 @@ export default async function Product({
   if (!product) return notFound();
 
   return (
-    <div className="grid grid-cols-2 px-10">
+    <div className="grid grid-cols-1 px-10 lg:grid-cols-2">
       <div className="w-full p-4">
         <img
           src={product.pictureUrl ?? ""}
           alt={product.name}
-          className="w-full rounded-xl object-fill"
+          className="w-full rounded-xl bg-white object-fill"
         />
       </div>
 
       <div className="w-full">
-        <h1 className="mx-10 text-2xl font-bold">{product.name}</h1>
-        <Card className="mt-10 ml-auto w-2/3">
+        <h1 className="mx-10 text-center text-2xl font-bold">{product.name}</h1>
+        <Card className="mt-10 ml-auto w-full lg:w-2/3">
           <CardContent>
             <h2 className="text-xl font-semibold">
               {dictionary.card.buy_in_store} {product.store.name}
